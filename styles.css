@@ -1,0 +1,16 @@
+circle {
+    fill: steelblue;
+}
+line{
+    stroke:darkGrey;
+    stroke-width:6;
+}
+
+.label{
+    fill:white;
+    font-weight: bold;
+    text-anchor: middle;
+    font-size: 16px;
+    letter-spacing: 3px;
+}
+
