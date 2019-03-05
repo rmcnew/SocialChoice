@@ -20,3 +20,125 @@ A02077329
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */ 
+/* Turn-on strict mode for easier debugging */
+'use strict';
+
+let fieldNames = [
+    "voter-a-alex-vote",
+    "voter-b-alex-vote",
+    "voter-c-alex-vote",
+    "voter-d-alex-vote",
+    "voter-a-bart-vote",
+    "voter-b-bart-vote",
+    "voter-c-bart-vote",
+    "voter-d-bart-vote",
+    "voter-a-cindy-vote",
+    "voter-b-cindy-vote",
+    "voter-c-cindy-vote",
+    "voter-d-cindy-vote",
+    "voter-a-david-vote",
+    "voter-b-david-vote",
+    "voter-c-david-vote",
+    "voter-d-david-vote",
+    "voter-a-erik-vote",
+    "voter-b-erik-vote",
+    "voter-c-erik-vote",
+    "voter-d-erik-vote",
+    "voter-a-frank-vote",
+    "voter-b-frank-vote",
+    "voter-c-frank-vote",
+    "voter-d-frank-vote",
+    "voter-a-greg-vote",
+    "voter-b-greg-vote",
+    "voter-c-greg-vote",
+    "voter-d-greg-vote"];
+
+let weightNames = [
+    "voter-a-weight",
+    "voter-b-weight",
+    "voter-c-weight",
+    "voter-d-weight"];
+
+let defaultFieldValues = {
+    "voter-a-alex-vote": 3,
+    "voter-b-alex-vote": 1,
+    "voter-c-alex-vote": 2,
+    "voter-d-alex-vote": 4,
+    "voter-a-bart-vote": 1,
+    "voter-b-bart-vote": 2,
+    "voter-c-bart-vote": 5,
+    "voter-d-bart-vote": 7,
+    "voter-a-cindy-vote": 2,
+    "voter-b-cindy-vote": 3,
+    "voter-c-cindy-vote": 7,
+    "voter-d-cindy-vote": 3,
+    "voter-a-david-vote": 4,
+    "voter-b-david-vote": 7,
+    "voter-c-david-vote": 6,
+    "voter-d-david-vote": 6,
+    "voter-a-erik-vote": 6,
+    "voter-b-erik-vote": 5,
+    "voter-c-erik-vote": 3,
+    "voter-d-erik-vote": 1,
+    "voter-a-frank-vote": 5,
+    "voter-b-frank-vote": 6,
+    "voter-c-frank-vote": 1,
+    "voter-d-frank-vote": 2,
+    "voter-a-greg-vote": 7,
+    "voter-b-greg-vote": 4,
+    "voter-c-greg-vote": 4,
+    "voter-d-greg-vote": 5};
+
+let defaultWeightValues = {
+    "voter-a-weight": 5,
+    "voter-b-weight": 4,
+    "voter-c-weight": 3,
+    "voter-d-weight": 6};
+
+function setVoterTableToDefault() {
+    weightNames.forEach( weightName => {
+        document.getElementById(weightName).value = defaultWeightValues[weightName];
+    });
+    fieldNames.forEach( fieldName => {
+        document.getElementById(fieldName).value = defaultFieldValues[fieldName]; 
+    });
+}
+
+function getRandomWeight() {
+    return Math.floor(Math.random() * Math.floor(10));
+}
+
+function getVoterChoices() {
+    return [1, 2, 3, 4, 5, 6, 7];
+}
+
+function randomChoice(voterChoices) {
+    let index = Math.floor(Math.random() * Math.floor(voterChoices.length));
+    return voterChoices.splice(index, 1);
+}
+
+function setVoterTableToRandom() {
+    weightNames.forEach( weightName => {
+        document.getElementById(weightName).value = getRandomWeight();
+    });
+    let voterAChoices = getVoterChoices();
+    let voterBChoices = getVoterChoices();
+    let voterCChoices = getVoterChoices();
+    let voterDChoices = getVoterChoices();
+    fieldNames.forEach( fieldName => {
+        let choice = -1;
+        if (fieldName.startsWith("voter-a")) {
+            choice = randomChoice(voterAChoices);
+
+        } else if (fieldName.startsWith("voter-b")) {
+            choice = randomChoice(voterBChoices);
+
+        } else if (fieldName.startsWith("voter-c")) {
+            choice = randomChoice(voterCChoices);
+
+        } else {  // "voter-d"
+            choice = randomChoice(voterDChoices);
+        }
+        document.getElementById(fieldName).value = choice; 
+    });
+}
