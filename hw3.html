@@ -48,21 +48,17 @@ A02077329
                     <th class="voter">Voter D</th>
                 </tr>
                 <tr>
-                    <th class="candidate">Choice</th>
+                    <th class="voter-weight">Weight:</th>
                     <th class="voter-weight">
-                        <label for="voter-a-weight">Weight:</label>
                         <input id="voter-a-weight" name="voter-a-weight" type="number" min="0" max="9" value="5" required />
                     </th>
                     <th class="voter-weight">
-                        <label for="voter-b-weight">Weight:</label>
                         <input id="voter-b-weight" name="voter-b-weight" type="number" min="0" max="9" value="4" required />
                     </th>
                     <th class="voter-weight">
-                        <label for="voter-c-weight">Weight:</label>
                         <input id="voter-c-weight" name="voter-c-weight" type="number" min="0" max="9" value="3" required />
                     </th>
                     <th class="voter-weight">
-                        <label for="voter-d-weight">Weight:</label>
                         <input id="voter-d-weight" name="voter-d-weight" type="number" min="0" max="9" value="6" required />
                     </th>
                 </tr>
@@ -168,6 +164,15 @@ A02077329
             <option value="greg-over-frank">Greg &gt; Frank</option>
         </select>
     </div>
+	<div id="rotateDiv">
+		<input type="button" value="Rotate A" onclick=rotateVoter("voter-a") />
+		<input type="button" value="Rotate B" onclick=rotateVoter("voter-b") />
+		<input type="button" value="Rotate C" onclick=rotateVoter("voter-c") />
+		<input type="button" value="Rotate D" onclick=rotateVoter("voter-d") />
+    </div>
+	<div id="submitDiv">
+		<input type="button" value="Submit" onclick=submit() />
+	</div>
     <div id="majority-graph">
     </div>
     <div id="results">

@@ -151,21 +151,44 @@ function setVoterTableToRandom() {
     });
 }
 
+function rotateVoter(voterName) {
+	// console.log("rotate " + voterName);
+	let firstFieldName = null;
+	let previousFieldValue = null; 
+	fieldNames.forEach( fieldName => {
+		if (fieldName.startsWith(voterName)) {
+			if (firstFieldName === null) {
+				firstFieldName = fieldName;
+				previousFieldValue = document.getElementById(fieldName).value;
+			} else {
+				let currentFieldValue = document.getElementById(fieldName).value;
+				document.getElementById(fieldName).value = previousFieldValue;
+				previousFieldValue = currentFieldValue;
+			}
+		}
+	});	
+	document.getElementById(firstFieldName).value = previousFieldValue;
+}
+
 function setVoterTableToPreference(preferenceString) {
     if (preferenceString !== "") {
         // console.log("preferenceString is: " + preferenceString);
-        let [highCandidate, , lowCandidate] = preferenceString.split("-");
-        console.log("highCandidate is: " + highCandidate + ", lowCandidate is: " + lowCandidate);
+        let [betterCandidate, , worseCandidate] = preferenceString.split("-");
+        // console.log("betterCandidate is: " + betterCandidate + ", worseCandidate is: " + worseCandidate);
         voterNames.forEach( voterName => {
-            let highKey = voterName + "-" + highCandidate + "-vote"; 
-            let lowKey = voterName + "-" + lowCandidate + "-vote"; 
-            let highValue = document.getElementById(highKey).value;
-            let lowValue = document.getElementById(lowKey).value;
-            if (lowValue > highValue) {  // swap if needed
-                console.log("Swapping " + highKey + "=" + highValue + " with " + lowKey + "=" + lowValue);
-                document.getElementById(highKey).value = lowValue;
-                document.getElementById(lowKey).value = highValue;
+            let betterKey = voterName + "-" + betterCandidate + "-vote"; 
+            let worseKey = voterName + "-" + worseCandidate + "-vote"; 
+            let betterValue = document.getElementById(betterKey).value;
+            let worseValue = document.getElementById(worseKey).value;
+            if (worseValue < betterValue) {  // swap if needed
+                // console.log("Swapping " + betterKey + "=" + betterValue + " with " + worseKey + "=" + worseValue);
+                document.getElementById(betterKey).value = worseValue;
+                document.getElementById(worseKey).value = betterValue;
             }
         });
     }
+}
+
+function submit() {
+
 }
