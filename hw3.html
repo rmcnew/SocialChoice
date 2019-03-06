@@ -121,6 +121,52 @@ A02077329
         </table>
         <input type="button" value="Reset to Default" onclick=setVoterTableToDefault() />
         <input type="button" value="Random" onclick=setVoterTableToRandom() />
+        <label id="voter-preference-selector-label" for="voter-preference-selector">Voter Preference:</label>
+        <select id="voter-preference-selector" onchange=setVoterTableToPreference(value) >
+            <option value="">--</option>
+            <option value="alex-over-bart">Alex &gt; Bart</option>
+            <option value="alex-over-cindy">Alex &gt; Cindy</option>
+            <option value="alex-over-david">Alex &gt; David</option>
+            <option value="alex-over-erik">Alex &gt; Erik</option>
+            <option value="alex-over-frank">Alex &gt; Frank</option>
+            <option value="alex-over-greg">Alex &gt; Greg</option>
+            <option value="bart-over-alex">Bart &gt; Alex</option>
+            <option value="bart-over-cindy">Bart &gt; Cindy</option>
+            <option value="bart-over-david">Bart &gt; David</option>
+            <option value="bart-over-erik">Bart &gt; Erik</option>
+            <option value="bart-over-frank">Bart &gt; Frank</option>
+            <option value="bart-over-greg">Bart &gt; Greg</option>
+            <option value="cindy-over-alex">Cindy &gt; Alex</option>
+            <option value="cindy-over-bart">Cindy &gt; Bart</option>
+            <option value="cindy-over-david">Cindy &gt; David</option>
+            <option value="cindy-over-erik">Cindy &gt; Erik</option>
+            <option value="cindy-over-frank">Cindy &gt; Frank</option>
+            <option value="cindy-over-greg">Cindy &gt; Greg</option>
+            <option value="david-over-alex">David &gt; Alex</option>
+            <option value="david-over-bart">David &gt; Bart</option>
+            <option value="david-over-cindy">David &gt; Cindy</option>
+            <option value="david-over-erik">David &gt; Erik</option>
+            <option value="david-over-frank">David &gt; Frank</option>
+            <option value="david-over-greg">David &gt; Greg</option>
+            <option value="erik-over-alex">Erik &gt; Alex</option>
+            <option value="erik-over-bart">Erik &gt; Bart</option>
+            <option value="erik-over-cindy">Erik &gt; Cindy</option>
+            <option value="erik-over-david">Erik &gt; David</option>
+            <option value="erik-over-frank">Erik &gt; Frank</option>
+            <option value="erik-over-greg">Erik &gt; Greg</option>
+            <option value="frank-over-alex">Frank &gt; Alex</option>
+            <option value="frank-over-bart">Frank &gt; Bart</option>
+            <option value="frank-over-cindy">Frank &gt; Cindy</option>
+            <option value="frank-over-david">Frank &gt; David</option>
+            <option value="frank-over-erik">Frank &gt; Erik</option>
+            <option value="frank-over-greg">Frank &gt; Greg</option>
+            <option value="greg-over-alex">Greg &gt; Alex</option>
+            <option value="greg-over-bart">Greg &gt; Bart</option>
+            <option value="greg-over-cindy">Greg &gt; Cindy</option>
+            <option value="greg-over-david">Greg &gt; David</option>
+            <option value="greg-over-erik">Greg &gt; Erik</option>
+            <option value="greg-over-frank">Greg &gt; Frank</option>
+        </select>
     </div>
     <div id="majority-graph">
     </div>

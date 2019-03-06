@@ -59,6 +59,12 @@ let weightNames = [
     "voter-c-weight",
     "voter-d-weight"];
 
+let voterNames = [
+    "voter-a",
+    "voter-b",
+    "voter-c",
+    "voter-d"];
+
 let defaultFieldValues = {
     "voter-a-alex-vote": 3,
     "voter-b-alex-vote": 1,
@@ -96,6 +102,7 @@ let defaultWeightValues = {
     "voter-d-weight": 6};
 
 function setVoterTableToDefault() {
+    document.getElementById("voter-preference-selector").selectedIndex = 0;
     weightNames.forEach( weightName => {
         document.getElementById(weightName).value = defaultWeightValues[weightName];
     });
@@ -118,6 +125,7 @@ function randomChoice(voterChoices) {
 }
 
 function setVoterTableToRandom() {
+    document.getElementById("voter-preference-selector").selectedIndex = 0;
     weightNames.forEach( weightName => {
         document.getElementById(weightName).value = getRandomWeight();
     });
@@ -141,4 +149,23 @@ function setVoterTableToRandom() {
         }
         document.getElementById(fieldName).value = choice; 
     });
+}
+
+function setVoterTableToPreference(preferenceString) {
+    if (preferenceString !== "") {
+        // console.log("preferenceString is: " + preferenceString);
+        let [highCandidate, , lowCandidate] = preferenceString.split("-");
+        console.log("highCandidate is: " + highCandidate + ", lowCandidate is: " + lowCandidate);
+        voterNames.forEach( voterName => {
+            let highKey = voterName + "-" + highCandidate + "-vote"; 
+            let lowKey = voterName + "-" + lowCandidate + "-vote"; 
+            let highValue = document.getElementById(highKey).value;
+            let lowValue = document.getElementById(lowKey).value;
+            if (lowValue > highValue) {  // swap if needed
+                console.log("Swapping " + highKey + "=" + highValue + " with " + lowKey + "=" + lowValue);
+                document.getElementById(highKey).value = lowValue;
+                document.getElementById(lowKey).value = highValue;
+            }
+        });
+    }
 }
