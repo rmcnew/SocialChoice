@@ -153,6 +153,7 @@ function setVoterTableToRandom() {
 
 function rotateVoter(voterName) {
 	// console.log("rotate " + voterName);
+    document.getElementById("voter-preference-selector").selectedIndex = 0;
 	let firstFieldName = null;
 	let previousFieldValue = null; 
 	fieldNames.forEach( fieldName => {
@@ -168,6 +169,7 @@ function rotateVoter(voterName) {
 		}
 	});	
 	document.getElementById(firstFieldName).value = previousFieldValue;
+    validateVoter(voterName);
 }
 
 function setVoterTableToPreference(preferenceString) {
@@ -187,8 +189,37 @@ function setVoterTableToPreference(preferenceString) {
             }
         });
     }
+    voterNames.forEach( voterName => { validateVoter(voterName) });
+}
+
+function validateVoter(voterName) {
+    let choices = getVoterChoices(); 
+    let result = true;
+	fieldNames.forEach( fieldName => {
+		if (fieldName.startsWith(voterName)) {
+            let element = document.getElementById(fieldName);
+            let index = choices.indexOf(element.valueAsNumber);
+            if (index === -1) {
+                element.setAttribute("class", "invalid");
+                result = false;
+            } else {
+                element.setAttribute("class", "valid");
+                choices.splice(index, 1);    
+            }
+		}
+	});	
+    return result;
 }
 
 function submit() {
+    let valid = true;
+    voterNames.forEach( voterName => {
+        if (!validateVoter(voterName)) {
+            alert("Invalid votes present for " + voterName + "!  Correct highlighted cells.");
+            valid = false;
+        }
+    });
+    if (valid) {
 
+    }
 }

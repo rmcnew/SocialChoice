@@ -24,3 +24,7 @@ tfoot {
     background-color: #333;
     color: #fff;
 }
+
+.invalid {
+    background-color: pink;
+}
