@@ -50,151 +50,155 @@ A02077329
                 <tr>
                     <th class="voter-weight">Weight:</th>
                     <th class="voter-weight">
-                        <input id="voter-a-weight" name="voter-a-weight" type="number" min="0" max="9" value="5" required />
+                        <input id="voter-a-weight" name="voter-a-weight" type="number" min="0" max="9" value="5" required
+                               class="voter-weight" />
                     </th>
                     <th class="voter-weight">
-                        <input id="voter-b-weight" name="voter-b-weight" type="number" min="0" max="9" value="4" required />
+                        <input id="voter-b-weight" name="voter-b-weight" type="number" min="0" max="9" value="4" required 
+                               class="voter-weight" />
                     </th>
                     <th class="voter-weight">
-                        <input id="voter-c-weight" name="voter-c-weight" type="number" min="0" max="9" value="3" required />
+                        <input id="voter-c-weight" name="voter-c-weight" type="number" min="0" max="9" value="3" required 
+                               class="voter-weight" />
                     </th>
                     <th class="voter-weight">
-                        <input id="voter-d-weight" name="voter-d-weight" type="number" min="0" max="9" value="6" required />
+                        <input id="voter-d-weight" name="voter-d-weight" type="number" min="0" max="9" value="6" required 
+                               class="voter-weight" />
                     </th>
                 </tr>
             </thead>
             <tbody id="voterTableBody">
                 <tr class="odd-row" id="alex-row">
-                    <td class="candidate">Alex</td>
+                    <td class="candidate, odd-row">Alex</td>
                     <td class="voter-a-vote">
                         <input id="voter-a-alex-vote" type="number" min="1" max="7" step="1" value="3" required
-                               onchange=validateVoter("voter-a") />
+                               onchange=validateVoter("voter-a") class="odd-row" />
                     </td> 
                     <td class="voter-b-vote">
                         <input id="voter-b-alex-vote" type="number" min="1" max="7" step="1" value="1" required
-                               onchange=validateVoter("voter-b") />
+                               onchange=validateVoter("voter-b") class="odd-row" />
                     </td> 
                     <td class="voter-c-vote">
                         <input id="voter-c-alex-vote" type="number" min="1" max="7" step="1" value="2" required
-                               onchange=validateVoter("voter-c") />
+                               onchange=validateVoter("voter-c") class="odd-row" />
                     </td> 
                     <td class="voter-d-vote">
                         <input id="voter-d-alex-vote" type="number" min="1" max="7" step="1" value="4" required
-                               onchange=validateVoter("voter-d") />
+                               onchange=validateVoter("voter-d") class="odd-row" />
                     </td> 
                 </tr>
                 <tr class="even-row" id="bart-row">
-                    <td class="candidate">Bart</td>
+                    <td class="candidate, even-row">Bart</td>
                     <td class="voter-a-vote">
                         <input id="voter-a-bart-vote" type="number" min="1" max="7" step="1" value="1" required
-                               onchange=validateVoter("voter-a") />
+                               onchange=validateVoter("voter-a") class="even-row" />
                     </td> 
                     <td class="voter-b-vote">
                         <input id="voter-b-bart-vote" type="number" min="1" max="7" step="1" value="2" required
-                               onchange=validateVoter("voter-b") />
+                               onchange=validateVoter("voter-b") class="even-row" />
                     </td> 
                     <td class="voter-c-vote">
                         <input id="voter-c-bart-vote" type="number" min="1" max="7" step="1" value="5" required
-                               onchange=validateVoter("voter-c") />
+                               onchange=validateVoter("voter-c") class="even-row" />
                     </td> 
                     <td class="voter-d-vote">
                         <input id="voter-d-bart-vote" type="number" min="1" max="7" step="1" value="7" required
-                               onchange=validateVoter("voter-d") />
+                               onchange=validateVoter("voter-d") class="even-row" />
                     </td> 
                 </tr>
                 <tr class="odd-row" id="cindy-row">
-                    <td class="candidate">Cindy</td>
+                    <td class="candidate, odd-row">Cindy</td>
                     <td class="voter-a-vote">
                         <input id="voter-a-cindy-vote" type="number" min="1" max="7" step="1" value="2" required
-                               onchange=validateVoter("voter-a") />
+                               onchange=validateVoter("voter-a") class="odd-row" />
                     </td> 
                     <td class="voter-b-vote">
                         <input id="voter-b-cindy-vote" type="number" min="1" max="7" step="1" value="3" required
-                               onchange=validateVoter("voter-b") />
+                               onchange=validateVoter("voter-b") class="odd-row" />
                     </td> 
                     <td class="voter-c-vote">
                         <input id="voter-c-cindy-vote" type="number" min="1" max="7" step="1" value="7" required
-                               onchange=validateVoter("voter-c") />
+                               onchange=validateVoter("voter-c") class="odd-row" />
                     </td> 
                     <td class="voter-d-vote">
                         <input id="voter-d-cindy-vote" type="number" min="1" max="7" step="1" value="3" required
-                               onchange=validateVoter("voter-d") />
+                               onchange=validateVoter("voter-d") class="odd-row" />
                     </td> 
                 </tr>
                 <tr class="even-row" id="david-row">
-                    <td class="candidate">David</td>
+                    <td class="candidate, even-row">David</td>
                     <td class="voter-a-vote">
                         <input id="voter-a-david-vote" type="number" min="1" max="7" step="1" value="4" required
-                               onchange=validateVoter("voter-a") />
+                               onchange=validateVoter("voter-a") class="even-row" />
                     </td> 
                     <td class="voter-b-vote">
                         <input id="voter-b-david-vote" type="number" min="1" max="7" step="1" value="7" required
-                               onchange=validateVoter("voter-b") />
+                               onchange=validateVoter("voter-b") class="even-row" />
                     </td> 
                     <td class="voter-c-vote">
                         <input id="voter-c-david-vote" type="number" min="1" max="7" step="1" value="6" required
-                               onchange=validateVoter("voter-c") />
+                               onchange=validateVoter("voter-c") class="even-row" />
                     </td> 
                     <td class="voter-d-vote">
                         <input id="voter-d-david-vote" type="number" min="1" max="7" step="1" value="6" required
-                               onchange=validateVoter("voter-d") />
+                               onchange=validateVoter("voter-d") class="even-row" />
                     </td> 
                 </tr>
                 <tr class="odd-row" id="erik-row">
-                    <td class="candidate">Erik</td>
+                    <td class="candidate, odd-row">Erik</td>
                     <td class="voter-a-vote">
                         <input id="voter-a-erik-vote" type="number" min="1" max="7" step="1" value="6" required
-                               onchange=validateVoter("voter-a") />
+                               onchange=validateVoter("voter-a") class="odd-row" />
                     </td> 
                     <td class="voter-b-vote">
                         <input id="voter-b-erik-vote" type="number" min="1" max="7" step="1" value="5" required
-                               onchange=validateVoter("voter-b") />
+                               onchange=validateVoter("voter-b") class="odd-row" />
                     </td> 
                     <td class="voter-c-vote">
                         <input id="voter-c-erik-vote" type="number" min="1" max="7" step="1" value="3" required
-                               onchange=validateVoter("voter-c") />
+                               onchange=validateVoter("voter-c") class="odd-row" />
                     </td> 
                     <td class="voter-d-vote">
                         <input id="voter-d-erik-vote" type="number" min="1" max="7" step="1" value="1" required
-                               onchange=validateVoter("voter-d") />
+                               onchange=validateVoter("voter-d") class="odd-row" />
                     </td> 
                 </tr>
                 <tr class="even-row" id="frank-row">
-                    <td class="candidate">Frank</td>
+                    <td class="candidate, even-row">Frank</td>
                     <td class="voter-a-vote">
                         <input id="voter-a-frank-vote" type="number" min="1" max="7" step="1" value="5" required
-                               onchange=validateVoter("voter-a") />
+                               onchange=validateVoter("voter-a") class="even-row" />
                     </td> 
                     <td class="voter-b-vote">
                         <input id="voter-b-frank-vote" type="number" min="1" max="7" step="1" value="6" required
-                               onchange=validateVoter("voter-b") />
+                               onchange=validateVoter("voter-b") class="even-row" />
                     </td> 
                     <td class="voter-c-vote">
                         <input id="voter-c-frank-vote" type="number" min="1" max="7" step="1" value="1" required
-                               onchange=validateVoter("voter-c") />
+                               onchange=validateVoter("voter-c") class="even-row" />
                     </td> 
                     <td class="voter-d-vote">
                         <input id="voter-d-frank-vote" type="number" min="1" max="7" step="1" value="2" required
-                               onchange=validateVoter("voter-d") />
+                               onchange=validateVoter("voter-d") class="even-row" />
                     </td> 
                 </tr>
                 <tr class="odd-row" id="greg-row">
-                    <td class="candidate">Greg</td>
+                    <td class="candidate, odd-row">Greg</td>
                     <td class="voter-a-vote">
                         <input id="voter-a-greg-vote" type="number" min="1" max="7" step="1" value="7" required
-                               onchange=validateVoter("voter-a") />
+                               onchange=validateVoter("voter-a") class="odd-row" />
                     </td> 
                     <td class="voter-b-vote">
                         <input id="voter-b-greg-vote" type="number" min="1" max="7" step="1" value="4" required
-                               onchange=validateVoter("voter-b") />
+                               onchange=validateVoter("voter-b") class="odd-row" />
                     </td> 
                     <td class="voter-c-vote">
                         <input id="voter-c-greg-vote" type="number" min="1" max="7" step="1" value="4" required
-                               onchange=validateVoter("voter-c") />
+                               onchange=validateVoter("voter-c") class="odd-row" />
                     </td> 
                     <td class="voter-d-vote">
                         <input id="voter-d-greg-vote" type="number" min="1" max="7" step="1" value="5" required
-                               onchange=validateVoter("voter-d") />
+                               onchange=validateVoter("voter-d") class="odd-row" />
                     </td> 
                 </tr>
             </tbody>

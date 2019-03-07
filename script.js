@@ -103,6 +103,7 @@ let defaultWeightValues = {
 
 function setVoterTableToDefault() {
     document.getElementById("voter-preference-selector").selectedIndex = 0;
+    d3.selectAll(".invalid").classed("invalid", false);
     weightNames.forEach( weightName => {
         document.getElementById(weightName).value = defaultWeightValues[weightName];
     });
@@ -126,6 +127,7 @@ function randomChoice(voterChoices) {
 
 function setVoterTableToRandom() {
     document.getElementById("voter-preference-selector").selectedIndex = 0;
+    d3.selectAll(".invalid").classed("invalid", false);
     weightNames.forEach( weightName => {
         document.getElementById(weightName).value = getRandomWeight();
     });
@@ -200,10 +202,10 @@ function validateVoter(voterName) {
             let element = document.getElementById(fieldName);
             let index = choices.indexOf(element.valueAsNumber);
             if (index === -1) {
-                element.setAttribute("class", "invalid");
+                element.classList.add("invalid");
                 result = false;
             } else {
-                element.setAttribute("class", "valid");
+                element.classList.remove("invalid");
                 choices.splice(index, 1);    
             }
 		}
@@ -211,11 +213,15 @@ function validateVoter(voterName) {
     return result;
 }
 
+function printVoterName(voterName) {
+    return "Voter " + voterName.charAt(6).toUpperCase();
+}
+
 function submit() {
     let valid = true;
     voterNames.forEach( voterName => {
         if (!validateVoter(voterName)) {
-            alert("Invalid votes present for " + voterName + "!  Correct highlighted cells.");
+            alert("Invalid votes present for " + printVoterName(voterName) + "!  Correct highlighted cells.");
             valid = false;
         }
     });
