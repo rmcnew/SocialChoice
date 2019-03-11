@@ -65,6 +65,15 @@ let voterNames = [
     "voter-c",
     "voter-d"];
 
+let candidateNames = [
+	"alex",
+	"bart",
+	"cindy",
+	"david",
+	"erik",
+	"frank",
+	"greg"];
+    
 let defaultFieldValues = {
     "voter-a-alex-vote": 3,
     "voter-b-alex-vote": 1,
@@ -217,6 +226,82 @@ function printVoterName(voterName) {
     return "Voter " + voterName.charAt(6).toUpperCase();
 }
 
+function extractCandidateFromField(field) {
+	return field.split("-")[2];	
+}
+
+function calculateRanking() {
+	let ranking = [];
+	let candidateTotals = {};
+	// initialize candidate totals
+	candidateNames.forEach( candidateName => {
+		candidateTotals[candidateName] = 0;		
+	});	
+	// calculate totals from table
+	fieldNames.forEach( fieldName => {
+		let candidate = extractCandidateFromField(fieldName);
+		candidateTotals[candidate] += document.getElementById(fieldName).valueAsNumber;
+	});
+	// populate ranking
+	candidateNames.forEach( candidateName => {
+		ranking.push([candidateName, candidateTotals[candidateName]]);		
+	});
+	// sort ranking
+	ranking.sort( (a, b) => {
+		return a[1] - b[1];	
+	});
+	// return candidateTotals and the ranking of 
+	// candidates in most-favored to least-favored order
+	return [candidateTotals, ranking];
+}
+
+const svgSize = 600;
+const nodeRadius = 30;
+function drawMajorityGraph(ranking) {
+	// draw the majority graph as a circle shape
+	let graphAngle = (2 * Math.PI) / ranking.length;
+	let currentAngle = 0;
+	let graphRadius = svgSize / 4;
+	let svgCenter = [svgSize/2, svgSize/2];
+	let graphedRanking = [];
+	// calculate node positions
+	ranking.forEach( candidateRank => {
+			// swap x and y so the most-favored candidate
+			// is in the 12 o'clock position
+			let x = svgCenter[0] + graphRadius * Math.sin(currentAngle);
+			let y = svgCenter[1] - graphRadius * Math.cos(currentAngle);
+			let candidate = {"name":candidateRank[0], 
+				             "rank":candidateRank[1],
+				             "x":x,
+				             "y":y};			
+			graphedRanking.push(candidate);
+			currentAngle += graphAngle;
+	});
+	console.log("graphedRanking is:");console.log(graphedRanking);
+	let majorityGraphSvg = d3.select("#majority-graph")
+							 .append("svg")
+							 .attr("width", svgSize)
+							 .attr("height", svgSize);
+	let nodes = majorityGraphSvg.selectAll("circle")
+								.data(graphedRanking)
+								.enter()
+								.append("circle")
+								.attr("cx", d => d.x)
+								.attr("cy", d => d.y)
+								.attr("r", nodeRadius)
+								.style("fill", "blue");
+	let nodeLabels = majorityGraphSvg.selectAll("text")
+									 .data(graphedRanking)
+									 .enter()
+									 .append("text")
+									 .text(d => d.name)
+									 .attr("font-size", 16)
+									 .style("fill", "white")
+									 .attr("x", d => d.x - (nodeRadius / 2))
+									 .attr("y", d => d.y);
+	
+}
+
 function submit() {
     let valid = true;
     voterNames.forEach( voterName => {
@@ -226,6 +311,8 @@ function submit() {
         }
     });
     if (valid) {
-
+    	let [candidateTotals, ranking] = calculateRanking();
+    	console.log(ranking);
+    	drawMajorityGraph(ranking);
     }
 }
