@@ -1,23 +1,101 @@
-circle {
-    fill: steelblue;
+circle.alex {
+    fill: crimson;
 }
-
-line {
-    stroke:black;
-    stroke-width:2;
+circle.bart {
+    fill: darkorange;
+}
+circle.cindy {
+    fill: gold;
+}
+circle.david {
+    fill: green;
+}
+circle.erik {
+    fill: blue;
+}
+circle.frank {
+    fill: purple;
+}
+circle.greg {
+    fill: grey;
+}
+    
+line.alex {
+    stroke: crimson;
+    stroke-width: 2;
+}
+line.bart {
+    stroke: darkorange;
+    stroke-width: 2;
+}
+line.cindy {
+    stroke: gold;
+    stroke-width: 2;
+}
+line.david {
+    stroke: green;
+    stroke-width: 2;
+}
+line.erik {
+    stroke: blue;
+    stroke-width: 2;
+}
+line.frank {
+    stroke: purple;
+    stroke-width: 2;
+}
+line.greg {
+    stroke: grey;
+    stroke-width: 2;
 }
 
 .label {
-    fill:white;
+    fill: white;
     font-weight: bold;
     text-anchor: middle;
-    font-size: 16px;
-    letter-spacing: 3px;
+    font-size: 18px;
+    text-transform:capitalize;
 }
 
 table,
 td {
     border: 1px solid #333;
+}
+
+td.alex {
+    color: white;
+    font-weight: bold;
+    background-color: crimson;
+}
+td.bart {
+    color: white;
+    font-weight: bold;
+    background-color: darkorange;
+}
+td.cindy {
+    color: white;
+    font-weight: bold;
+    background-color: gold;
+}
+td.david {
+    color: white;
+    font-weight: bold;
+    background-color: green;
+}
+td.erik {
+    color: white;
+    font-weight: bold;
+    background-color: blue;
+}
+td.frank {
+    color: white;
+    font-weight: bold;
+    background-color: purple;
+}
+td.greg {
+    color: white;
+    font-weight: bold;
+    background-color: grey;
 }
 
 thead,

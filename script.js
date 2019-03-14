@@ -294,19 +294,24 @@ function drawMajorityGraph(ranking) {
             let rightPerpVector = [unitVector[1], -unitVector[0]];
             let leftArrowhead = {"from": to, 
                                    "to": {"x":to["x"] - (unitVector[0] * arrowLength) + (leftPerpVector[0] * arrowBackSide),
-                                          "y":to["y"] - (unitVector[1] * arrowLength) + (leftPerpVector[1] * arrowBackSide)}};
+                                          "y":to["y"] - (unitVector[1] * arrowLength) + (leftPerpVector[1] * arrowBackSide)},
+                                "class": graphedRanking[i]["name"]};
             let rightArrowhead = {"from": to, 
                                    "to": {"x":to["x"] - (unitVector[0] * arrowLength) + (rightPerpVector[0] * arrowBackSide),
-                                          "y":to["y"] - (unitVector[1] * arrowLength) + (rightPerpVector[1] * arrowBackSide)}};
+                                          "y":to["y"] - (unitVector[1] * arrowLength) + (rightPerpVector[1] * arrowBackSide)},
+                                "class": graphedRanking[i]["name"]};
             edgePoints.push(leftArrowhead);
             edgePoints.push(rightArrowhead);
-            edgePoints.push({"from": from, "to": to});
+            edgePoints.push({"from": from, "to": to, "class": graphedRanking[i]["name"]});
         }
     }
 	// console.log("graphedRanking is:");
     // console.log(graphedRanking);
-    console.log("edgePoints is:");
-    console.log(edgePoints);
+    // console.log("edgePoints is:");
+    // console.log(edgePoints);
+    // delete the existing graph if there was one
+    d3.select("#majority-graph svg").remove();
+    // draw the majority graph
 	let majorityGraphSvg = d3.select("#majority-graph")
 							 .append("svg")
 							 .attr("width", svgSize)
@@ -318,7 +323,8 @@ function drawMajorityGraph(ranking) {
                                 .attr("x1", d => d["from"]["x"])
                                 .attr("y1", d => d["from"]["y"])
                                 .attr("x2", d => d["to"]["x"])
-                                .attr("y2", d => d["to"]["y"]);
+                                .attr("y2", d => d["to"]["y"])
+                                .attr("class", d => d["class"]);
 	let nodes = majorityGraphSvg.selectAll("circle")
 								.data(graphedRanking)
 								.enter()
@@ -326,16 +332,15 @@ function drawMajorityGraph(ranking) {
 								.attr("cx", d => d.x)
 								.attr("cy", d => d.y)
 								.attr("r", nodeRadius)
-								.style("fill", "blue");
+                                .attr("class", d => d.name);
 	let nodeLabels = majorityGraphSvg.selectAll("text")
 									 .data(graphedRanking)
 									 .enter()
 									 .append("text")
 									 .text(d => d.name)
-									 .attr("font-size", 16)
-									 .style("fill", "white")
-									 .attr("x", d => d.x - (nodeRadius / 2))
-									 .attr("y", d => d.y);
+                                     .attr("class", "label") 
+									 .attr("x", d => d.x)
+									 .attr("y", d => d.y + nodeRadius/6 );
 	
 }
 
