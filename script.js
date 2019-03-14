@@ -257,6 +257,9 @@ function calculateRanking() {
 
 const svgSize = 600;
 const nodeRadius = 30;
+const arrowBackSide = nodeRadius / 10;
+const arrowLength = nodeRadius / 2; 
+
 function drawMajorityGraph(ranking) {
 	// draw the majority graph as a circle shape
 	let graphAngle = (2 * Math.PI) / ranking.length;
@@ -264,6 +267,7 @@ function drawMajorityGraph(ranking) {
 	let graphRadius = svgSize / 4;
 	let svgCenter = [svgSize/2, svgSize/2];
 	let graphedRanking = [];
+    let edgePoints = [];
 	// calculate node positions
 	ranking.forEach( candidateRank => {
 			// swap x and y so the most-favored candidate
@@ -277,11 +281,44 @@ function drawMajorityGraph(ranking) {
 			graphedRanking.push(candidate);
 			currentAngle += graphAngle;
 	});
-	console.log("graphedRanking is:");console.log(graphedRanking);
+    // calculate edge positions
+    for (let i = 0; i < graphedRanking.length; i++) {
+        for (let j = i + 1; j < graphedRanking.length; j++) {
+            let vector = [graphedRanking[j]["x"] - graphedRanking[i]["x"], graphedRanking[j]["y"] - graphedRanking[i]["y"]];
+            let vectorMagnitude = Math.sqrt(vector[0] * vector[0] + vector[1] * vector[1]);
+            let unitVector = [vector[0] / vectorMagnitude, vector[1] / vectorMagnitude];
+            let from = {"x": graphedRanking[i]["x"], "y": graphedRanking[i]["y"]};
+            let to = {"x": graphedRanking[j]["x"] - (nodeRadius * unitVector[0]), 
+                      "y": graphedRanking[j]["y"] - (nodeRadius * unitVector[1])};
+            let leftPerpVector = [-unitVector[1], unitVector[0]];
+            let rightPerpVector = [unitVector[1], -unitVector[0]];
+            let leftArrowhead = {"from": to, 
+                                   "to": {"x":to["x"] - (unitVector[0] * arrowLength) + (leftPerpVector[0] * arrowBackSide),
+                                          "y":to["y"] - (unitVector[1] * arrowLength) + (leftPerpVector[1] * arrowBackSide)}};
+            let rightArrowhead = {"from": to, 
+                                   "to": {"x":to["x"] - (unitVector[0] * arrowLength) + (rightPerpVector[0] * arrowBackSide),
+                                          "y":to["y"] - (unitVector[1] * arrowLength) + (rightPerpVector[1] * arrowBackSide)}};
+            edgePoints.push(leftArrowhead);
+            edgePoints.push(rightArrowhead);
+            edgePoints.push({"from": from, "to": to});
+        }
+    }
+	// console.log("graphedRanking is:");
+    // console.log(graphedRanking);
+    console.log("edgePoints is:");
+    console.log(edgePoints);
 	let majorityGraphSvg = d3.select("#majority-graph")
 							 .append("svg")
 							 .attr("width", svgSize)
 							 .attr("height", svgSize);
+    let edges = majorityGraphSvg.selectAll("line")
+                                .data(edgePoints)
+                                .enter()
+                                .append("line")
+                                .attr("x1", d => d["from"]["x"])
+                                .attr("y1", d => d["from"]["y"])
+                                .attr("x2", d => d["to"]["x"])
+                                .attr("y2", d => d["to"]["y"]);
 	let nodes = majorityGraphSvg.selectAll("circle")
 								.data(graphedRanking)
 								.enter()
@@ -312,7 +349,7 @@ function submit() {
     });
     if (valid) {
     	let [candidateTotals, ranking] = calculateRanking();
-    	console.log(ranking);
+    	// console.log(ranking);
     	drawMajorityGraph(ranking);
     }
 }

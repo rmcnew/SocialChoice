@@ -3,8 +3,8 @@ circle {
 }
 
 line {
-    stroke:darkGrey;
-    stroke-width:6;
+    stroke:black;
+    stroke-width:2;
 }
 
 .label {
