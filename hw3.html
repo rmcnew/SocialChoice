@@ -38,6 +38,7 @@ A02077329
     </h4>
     </div>
     <div class="voter-table-div">
+        <h2>Voter Choices</h2>
         <table id="voter-table">
             <thead id="voter-table-head">
                 <tr class="voter">
@@ -261,9 +262,65 @@ A02077329
 	<div id="submitDiv">
 		<input type="button" value="Submit" onclick=submit() />
 	</div>
-    <div id="majority-graph">
+    <div id="majority-graph" hidden>
+        <h2>Majority Graph</h2>
     </div>
-    <div id="results">
+    <div id="results" hidden>
+        <h2>Results</h2>
+        <table id="results-table">
+            <thead id="results-table-head">
+                <tr class="results-header">
+                    <th>Ranking<br/>(1 is best)</th>
+                    <th>Slater</th>
+                    <th>Kemeny</th>
+                    <th>Bucklin</th>
+                </tr>
+            </thead>
+            <tbody id="results-table-body">
+                <tr id="results-row-1">
+                    <td id="label-1" class="table-label">1</td>
+                    <td id="slater-1"></td>
+                    <td id="kemeny-1"></td>
+                    <td id="bucklin-1"></td>
+                </tr>
+                <tr id="results-row-2">
+                    <td id="label-2" class="table-label">2</td>
+                    <td id="slater-2"></td>
+                    <td id="kemeny-2"></td>
+                    <td id="bucklin-2"></td>
+                </tr>
+                <tr id="results-row-3">
+                    <td id="label-3" class="table-label">3</td>
+                    <td id="slater-3"></td>
+                    <td id="kemeny-3"></td>
+                    <td id="bucklin-3"></td>
+                </tr>
+                <tr id="results-row-4">
+                    <td id="label-4" class="table-label">4</td>
+                    <td id="slater-4"></td>
+                    <td id="kemeny-4"></td>
+                    <td id="bucklin-4"></td>
+                </tr>
+                <tr id="results-row-5">
+                    <td id="label-5" class="table-label">5</td>
+                    <td id="slater-5"></td>
+                    <td id="kemeny-5"></td>
+                    <td id="bucklin-5"></td>
+                </tr>
+                <tr id="results-row-6">
+                    <td id="label-6" class="table-label">6</td>
+                    <td id="slater-6"></td>
+                    <td id="kemeny-6"></td>
+                    <td id="bucklin-6"></td>
+                </tr>
+                <tr id="results-row-7">
+                    <td id="label-7" class="table-label">7</td>
+                    <td id="slater-7"></td>
+                    <td id="kemeny-7"></td>
+                    <td id="bucklin-7"></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>

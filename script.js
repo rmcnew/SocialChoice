@@ -342,6 +342,11 @@ function drawMajorityGraph(ranking) {
 									 .attr("x", d => d.x)
 									 .attr("y", d => d.y + nodeRadius/6 );
 	
+    d3.select("#majority-graph").attr("hidden", null);
+}
+
+function showResults() {
+    d3.select("#results").attr("hidden", null);
 }
 
 function submit() {
@@ -356,5 +361,6 @@ function submit() {
     	let [candidateTotals, ranking] = calculateRanking();
     	// console.log(ranking);
     	drawMajorityGraph(ranking);
+        showResults();
     }
 }

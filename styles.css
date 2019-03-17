@@ -62,6 +62,10 @@ td {
     border: 1px solid #333;
 }
 
+.table-label {
+   text-align: center; 
+}
+
 td.alex {
     color: white;
     font-weight: bold;
