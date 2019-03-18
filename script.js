@@ -222,12 +222,32 @@ function validateVoter(voterName) {
     return result;
 }
 
+// convert the voter name into a printable string
 function printVoterName(voterName) {
     return "Voter " + voterName.charAt(6).toUpperCase();
 }
 
+// extract the candidate name from the field
 function extractCandidateFromField(field) {
 	return field.split("-")[2];	
+}
+
+// extract the voter name from the field
+function extractVoterFromField(field) {
+    return field.slice(0, 7);
+}
+
+// convert the voter ranking to a score that we can use in the weighted calculation
+function rankingToScore(ranking) {
+    switch (ranking) {
+        case 1: return 7;
+        case 2: return 6;
+        case 3: return 5;
+        case 4: return 4;
+        case 5: return 3;
+        case 6: return 2;
+        case 7: return 1;
+    }
 }
 
 function calculateRanking() {
@@ -240,7 +260,8 @@ function calculateRanking() {
 	// calculate totals from table
 	fieldNames.forEach( fieldName => {
 		let candidate = extractCandidateFromField(fieldName);
-		candidateTotals[candidate] += document.getElementById(fieldName).valueAsNumber;
+        let voterWeight = document.getElementById(extractVoterFromField(fieldName) + "-weight").valueAsNumber;
+		candidateTotals[candidate] += rankingToScore(document.getElementById(fieldName).valueAsNumber) * voterWeight;
 	});
 	// populate ranking
 	candidateNames.forEach( candidateName => {
@@ -248,7 +269,7 @@ function calculateRanking() {
 	});
 	// sort ranking
 	ranking.sort( (a, b) => {
-		return a[1] - b[1];	
+		return b[1] - a[1];	
 	});
 	// return candidateTotals and the ranking of 
 	// candidates in most-favored to least-favored order
