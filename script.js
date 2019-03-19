@@ -23,6 +23,7 @@ A02077329
 /* Turn-on strict mode for easier debugging */
 'use strict';
 
+// names for the voter choices table fields
 let fieldNames = [
     "voter-a-alex-vote",
     "voter-b-alex-vote",
@@ -53,18 +54,21 @@ let fieldNames = [
     "voter-c-greg-vote",
     "voter-d-greg-vote"];
 
+// names for the voter choices table voter weights
 let weightNames = [
     "voter-a-weight",
     "voter-b-weight",
     "voter-c-weight",
     "voter-d-weight"];
-
+ 
+// the voter names
 let voterNames = [
     "voter-a",
     "voter-b",
     "voter-c",
     "voter-d"];
 
+// the candidate names
 let candidateNames = [
 	"alex",
 	"bart",
@@ -73,7 +77,8 @@ let candidateNames = [
 	"erik",
 	"frank",
 	"greg"];
-    
+     
+// the default values for the voter choices table
 let defaultFieldValues = {
     "voter-a-alex-vote": 3,
     "voter-b-alex-vote": 1,
@@ -104,12 +109,14 @@ let defaultFieldValues = {
     "voter-c-greg-vote": 4,
     "voter-d-greg-vote": 5};
 
+// the default weights for the voter choices table
 let defaultWeightValues = {
     "voter-a-weight": 5,
     "voter-b-weight": 4,
     "voter-c-weight": 3,
     "voter-d-weight": 6};
 
+// reset the voter choices table to default values
 function setVoterTableToDefault() {
     document.getElementById("voter-preference-selector").selectedIndex = 0;
     d3.selectAll(".invalid").classed("invalid", false);
@@ -121,19 +128,24 @@ function setVoterTableToDefault() {
     });
 }
 
+// get a random weight value
 function getRandomWeight() {
     return Math.floor(Math.random() * Math.floor(10));
 }
 
+// get the default voter choices vector
 function getVoterChoices() {
     return [1, 2, 3, 4, 5, 6, 7];
 }
 
+// choose a random vote from the remaining choices
+// NOTE: this has a side effect of modifying the input vector
 function randomChoice(voterChoices) {
     let index = Math.floor(Math.random() * Math.floor(voterChoices.length));
     return voterChoices.splice(index, 1);
 }
 
+// randomize the voter choices table
 function setVoterTableToRandom() {
     document.getElementById("voter-preference-selector").selectedIndex = 0;
     d3.selectAll(".invalid").classed("invalid", false);
@@ -162,6 +174,7 @@ function setVoterTableToRandom() {
     });
 }
 
+// "rotate" the votes for a single voter
 function rotateVoter(voterName) {
 	// console.log("rotate " + voterName);
     document.getElementById("voter-preference-selector").selectedIndex = 0;
@@ -183,6 +196,7 @@ function rotateVoter(voterName) {
     validateVoter(voterName);
 }
 
+// set the voter choices to reflect one candidate preferred above another
 function setVoterTableToPreference(preferenceString) {
     if (preferenceString !== "") {
         // console.log("preferenceString is: " + preferenceString);
@@ -203,6 +217,7 @@ function setVoterTableToPreference(preferenceString) {
     voterNames.forEach( voterName => { validateVoter(voterName) });
 }
 
+// validate the votes for a single voter
 function validateVoter(voterName) {
     let choices = getVoterChoices(); 
     let result = true;
@@ -250,6 +265,8 @@ function rankingToScore(ranking) {
     }
 }
 
+// calculate the plurality vote ranking needed to construct
+// the majority graph
 function calculateRanking() {
 	let ranking = [];
 	let candidateTotals = {};
@@ -366,10 +383,37 @@ function drawMajorityGraph(ranking) {
     d3.select("#majority-graph").attr("hidden", null);
 }
 
-function showResults() {
-    d3.select("#results").attr("hidden", null);
+// get voter data as Voter classes 
+// for use in ranking calculations
+function extractVoterData() {
+    let voterData = {};
+    voterNames.forEach( name => {
+        voterData[name] = {};
+    });
+    fieldNames.forEach( fieldName => {
+        let name = extractVoterFromField(fieldName);
+        voterData[name]["name"] = name;
+        let candidate = extractCandidateFromField(fieldName);
+        let voterWeight = document.getElementById(extractVoterFromField(fieldName) + "-weight").valueAsNumber;
+        let vote = rankingToScore(document.getElementById(fieldName).valueAsNumber) * voterWeight;
+        voterData[name][candidate] = vote;
+    });
+    return voterData;
 }
 
+function calculateSingleTransferrableVote() {
+    let voterData = extractVoterData()
+    console.log(voterData);
+}
+
+// calculate rankings and show the results table
+function showResults() {
+    d3.select("#results").attr("hidden", null);
+    calculateSingleTransferrableVote();
+}
+
+// validate the voter choices input data and then
+// display the majority graph and results table
 function submit() {
     let valid = true;
     voterNames.forEach( voterName => {
@@ -380,7 +424,10 @@ function submit() {
     });
     if (valid) {
     	let [candidateTotals, ranking] = calculateRanking();
-    	// console.log(ranking);
+        //console.log("candidateTotals is:");
+        //console.log(candidateTotals);
+        //console.log("ranking is:");
+    	//console.log(ranking);
     	drawMajorityGraph(ranking);
         showResults();
     }
