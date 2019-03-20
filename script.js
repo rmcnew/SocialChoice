@@ -265,23 +265,42 @@ function rankingToScore(ranking) {
     }
 }
 
-// calculate the plurality vote ranking needed to construct
-// the majority graph
-function calculateRanking() {
+
+// get voter data as Voter classes 
+// for use in ranking calculations
+function extractVoterData() {
+    let voterData = {};
+    voterNames.forEach( name => {
+        voterData[name] = {};
+    });
+    fieldNames.forEach( fieldName => {
+        let name = extractVoterFromField(fieldName);
+        voterData[name]["name"] = name;
+        let candidate = extractCandidateFromField(fieldName);
+        let voterWeight = document.getElementById(extractVoterFromField(fieldName) + "-weight").valueAsNumber;
+        let vote = rankingToScore(document.getElementById(fieldName).valueAsNumber) * voterWeight;
+        voterData[name][candidate] = vote;
+    });
+    return voterData;
+}
+
+// calculate the plurality vote ranking 
+// needed to construct the majority graph
+function calculateRanking(voterData, candidates) {
 	let ranking = [];
 	let candidateTotals = {};
 	// initialize candidate totals
-	candidateNames.forEach( candidateName => {
+	candidates.forEach( candidateName => {
 		candidateTotals[candidateName] = 0;		
 	});	
 	// calculate totals from table
-	fieldNames.forEach( fieldName => {
-		let candidate = extractCandidateFromField(fieldName);
-        let voterWeight = document.getElementById(extractVoterFromField(fieldName) + "-weight").valueAsNumber;
-		candidateTotals[candidate] += rankingToScore(document.getElementById(fieldName).valueAsNumber) * voterWeight;
-	});
+    candidates.forEach( candidateName => {
+        voterNames.forEach ( voterName => {
+            candidateTotals[candidateName] += voterData[voterName][candidateName];
+        });
+    });
 	// populate ranking
-	candidateNames.forEach( candidateName => {
+	candidates.forEach( candidateName => {
 		ranking.push([candidateName, candidateTotals[candidateName]]);		
 	});
 	// sort ranking
@@ -383,33 +402,43 @@ function drawMajorityGraph(ranking) {
     d3.select("#majority-graph").attr("hidden", null);
 }
 
-// get voter data as Voter classes 
-// for use in ranking calculations
-function extractVoterData() {
-    let voterData = {};
-    voterNames.forEach( name => {
-        voterData[name] = {};
-    });
-    fieldNames.forEach( fieldName => {
-        let name = extractVoterFromField(fieldName);
-        voterData[name]["name"] = name;
-        let candidate = extractCandidateFromField(fieldName);
-        let voterWeight = document.getElementById(extractVoterFromField(fieldName) + "-weight").valueAsNumber;
-        let vote = rankingToScore(document.getElementById(fieldName).valueAsNumber) * voterWeight;
-        voterData[name][candidate] = vote;
-    });
-    return voterData;
-}
 
-function calculateSingleTransferrableVote() {
-    let voterData = extractVoterData()
-    console.log(voterData);
+function calculateSingleTransferrableVote(voterData) {
+    let svtResult = [];
+    let candidates = candidateNames.slice();
+    for (let i = 0; i < candidateNames.length; i++) {
+        let [, ranking] = calculateRanking(voterData, candidates);
+        let lowestCandidate = ranking.pop()[0];
+        //console.log("lowestCandidate is: " + lowestCandidate);
+        svtResult.unshift(lowestCandidate);
+        // remove the lowest candidate from the list of candidates
+        let lowestCandidateIndex = candidates.indexOf(lowestCandidate);
+        candidates.splice(lowestCandidateIndex, 1);
+        // update the voter records, removing the lowest candidate
+        // and reallocating the vote to the next preferred candidate
+        // for the voter
+        voterNames.forEach( voterName => {
+            // get the vote for the lowest candidate
+            let vote = voterData[voterName][lowestCandidate];
+            // remove the candidate from the voter's record 
+            delete voterData[voterName][lowestCandidate];
+            let highestCandidate = null
+            let highestVote = 0;
+            candidates.forEach( candidateName => {
+                if (voterData[voterName][candidateName] > highestVote) {
+                    highestVote = voterData[voterName][candidateName];
+                    highestCandidate = candidateName;
+                }
+            });
+            voterData[voterName][highestCandidate] = vote + highestVote;
+        });
+    }
+    return svtResult; 
 }
 
 // calculate rankings and show the results table
 function showResults() {
     d3.select("#results").attr("hidden", null);
-    calculateSingleTransferrableVote();
 }
 
 // validate the voter choices input data and then
@@ -423,12 +452,23 @@ function submit() {
         }
     });
     if (valid) {
-    	let [candidateTotals, ranking] = calculateRanking();
+        // get the voterData
+        let voterData = extractVoterData();
+        console.log("voterData is: ");
+        console.log(voterData);
+    	let [candidateTotals, ranking] = calculateRanking(voterData, candidateNames);
         //console.log("candidateTotals is:");
         //console.log(candidateTotals);
-        //console.log("ranking is:");
-    	//console.log(ranking);
+        console.log("ranking is:");
+    	console.log(ranking);
     	drawMajorityGraph(ranking);
+        let voterDataCopy = JSON.parse(JSON.stringify(voterData)); 
+        let svtResult = calculateSingleTransferrableVote(voterDataCopy);
+        for (let entry of svtResult.entries()) {
+            d3.select("#single-transferrable-vote-" + (entry[0] + 1)).text(entry[1]);
+        }
+        console.log("SVT result is: ");
+        console.log(svtResult);
         showResults();
     }
 }
