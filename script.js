@@ -275,7 +275,7 @@ function extractVoterData() {
     });
     fieldNames.forEach( fieldName => {
         let name = extractVoterFromField(fieldName);
-        voterData[name]["name"] = name;
+        // voterData[name]["name"] = name;
         let candidate = extractCandidateFromField(fieldName);
         let voterWeight = document.getElementById(extractVoterFromField(fieldName) + "-weight").valueAsNumber;
         let vote = rankingToScore(document.getElementById(fieldName).valueAsNumber) * voterWeight;
@@ -309,7 +309,7 @@ function calculateRanking(voterData, candidates) {
 	});
 	// return candidateTotals and the ranking of 
 	// candidates in most-favored to least-favored order
-	return [candidateTotals, ranking];
+	return ranking;
 }
 
 const svgSize = 600;
@@ -407,7 +407,7 @@ function calculateSingleTransferrableVote(voterData) {
     let svtResult = [];
     let candidates = candidateNames.slice();
     for (let i = 0; i < candidateNames.length; i++) {
-        let [, ranking] = calculateRanking(voterData, candidates);
+        let ranking = calculateRanking(voterData, candidates);
         let lowestCandidate = ranking.pop()[0];
         //console.log("lowestCandidate is: " + lowestCandidate);
         svtResult.unshift(lowestCandidate);
@@ -436,9 +436,66 @@ function calculateSingleTransferrableVote(voterData) {
     return svtResult; 
 }
 
+function cloneObject(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
 // calculate rankings and show the results table
 function showResults() {
     d3.select("#results").attr("hidden", null);
+}
+
+// put Single Transferrable Vote results in output table
+function updateSingleTransferrableVoteResults(svtResult) {
+    for (let entry of svtResult.entries()) {
+        d3.select("#single-transferrable-vote-" + (entry[0] + 1)).text(entry[1]);
+    }
+}
+
+// check a ranking to see if the ranking leader
+// has a majority of the votes (for Bucklin)
+function majorityExists(ranking) {
+    let total = 0;
+    console.log("majorityExists ranking: ");
+    console.log(ranking);
+    ranking.forEach( candidateVote => {
+        total += candidateVote[1];
+    });
+    let leaderVote = ranking[0][1];
+    console.log("leaderVote: " + leaderVote + ", total: " + total + ", percent: " + (leaderVote/total));
+    return ((leaderVote / total) > 0.5);
+}
+
+// combine the top choice of each voter 
+// with the next best choice
+function bucklinCombine(voterData) {
+    voterNames.forEach( voterName => {
+        let voterRanking = Object.entries(voterData[voterName]).sort( (a, b) => {
+            return b[1] - a[1];	
+        });
+        //console.log(voterName + " ranking is:");
+        //console.log(voterRanking);
+        let firstChoice = voterRanking[0];
+        let secondChoice = voterRanking[1];
+        voterData[voterName][firstChoice[0]] = firstChoice[1] + secondChoice[1];
+        voterData[voterName][secondChoice[0]] = 0;
+    });
+}
+
+// calculate the Bucklin ranking
+function calculateBucklin(voterData) {
+    let k = 0;
+    let ranking = calculateRanking(voterData, candidateNames);
+    let majorityFound = majorityExists(ranking);
+    console.log("initial majorityFound? " + majorityFound);
+    while (!majorityFound && k < 15) {
+        k++;
+        bucklinCombine(voterData);
+        ranking = calculateRanking(voterData, candidateNames);
+        majorityFound = majorityExists(ranking);
+    }
+    console.log("k is: " + k + ", majorityFound is: " + majorityFound);
+    return ranking;
 }
 
 // validate the voter choices input data and then
@@ -456,19 +513,17 @@ function submit() {
         let voterData = extractVoterData();
         console.log("voterData is: ");
         console.log(voterData);
-    	let [candidateTotals, ranking] = calculateRanking(voterData, candidateNames);
-        //console.log("candidateTotals is:");
-        //console.log(candidateTotals);
-        console.log("ranking is:");
-    	console.log(ranking);
+    	let ranking = calculateRanking(voterData, candidateNames);
+        //console.log("ranking is:");
+    	//console.log(ranking);
     	drawMajorityGraph(ranking);
-        let voterDataCopy = JSON.parse(JSON.stringify(voterData)); 
-        let svtResult = calculateSingleTransferrableVote(voterDataCopy);
-        for (let entry of svtResult.entries()) {
-            d3.select("#single-transferrable-vote-" + (entry[0] + 1)).text(entry[1]);
-        }
-        console.log("SVT result is: ");
-        console.log(svtResult);
+        let svtResult = calculateSingleTransferrableVote(cloneObject(voterData));
+        //console.log("SVT result is: ");
+        //console.log(svtResult);
+        updateSingleTransferrableVoteResults(svtResult);
+        let bucklinResult = calculateBucklin(cloneObject(voterData));
+        console.log("bucklinResult is:");
+        console.log(bucklinResult);
         showResults();
     }
 }
