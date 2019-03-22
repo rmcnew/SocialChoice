@@ -454,48 +454,72 @@ function updateSingleTransferrableVoteResults(svtResult) {
 
 // check a ranking to see if the ranking leader
 // has a majority of the votes (for Bucklin)
-function majorityExists(ranking) {
+function majorityExists(perVoterRanking, k) {
+    // initialize total and candidateTotals to zero
     let total = 0;
-    console.log("majorityExists ranking: ");
-    console.log(ranking);
-    ranking.forEach( candidateVote => {
-        total += candidateVote[1];
+    let candidateTotals = {};
+    candidateNames.forEach ( candidateName => {
+        candidateTotals[candidateName] = 0;
     });
-    let leaderVote = ranking[0][1];
-    console.log("leaderVote: " + leaderVote + ", total: " + total + ", percent: " + (leaderVote/total));
-    return ((leaderVote / total) > 0.5);
+    // walk perVoterRanking to get votes for each candidate 
+    voterNames.forEach( voterName => {
+        candidateNames.forEach ( candidateName => {
+            for (let index = 0; index < k; index++) {
+                if (candidateName === perVoterRanking[voterName][index][0]) {
+                    candidateTotals[candidateName] += perVoterRanking[voterName][index][1];
+                    total += perVoterRanking[voterName][index][1];
+                }
+            }
+        });
+    });
+    // sort candidateTotals to get a ranking
+    let ranking = Object.entries(candidateTotals).sort( (a, b) => {
+        return b[1] - a[1];	
+    });
+    //console.log("majorityExists ranking:");
+    //console.log(ranking);
+    // check top candidate for majority
+    if ((ranking[0][1] / total) > 0.5) {
+        //console.log("total is: " + total + ", majority is: true");
+        return [true, ranking];
+    } else {
+        //console.log("total is: " + total + ", majority is: false");
+        return [false, ranking];
+    }
 }
 
-// combine the top choice of each voter 
-// with the next best choice
-function bucklinCombine(voterData) {
+// create a hash of per-voter rankings
+function calculatePerVoterRanking(voterData) {
+    let perVoterRanking = {};
     voterNames.forEach( voterName => {
         let voterRanking = Object.entries(voterData[voterName]).sort( (a, b) => {
             return b[1] - a[1];	
         });
-        //console.log(voterName + " ranking is:");
-        //console.log(voterRanking);
-        let firstChoice = voterRanking[0];
-        let secondChoice = voterRanking[1];
-        voterData[voterName][firstChoice[0]] = firstChoice[1] + secondChoice[1];
-        voterData[voterName][secondChoice[0]] = 0;
+        perVoterRanking[voterName] = voterRanking;
     });
+    //console.log("perVoterRanking is:");
+    //console.log(perVoterRanking);
+    return perVoterRanking;
 }
 
 // calculate the Bucklin ranking
 function calculateBucklin(voterData) {
-    let k = 0;
-    let ranking = calculateRanking(voterData, candidateNames);
-    let majorityFound = majorityExists(ranking);
-    console.log("initial majorityFound? " + majorityFound);
-    while (!majorityFound && k < 15) {
-        k++;
-        bucklinCombine(voterData);
-        ranking = calculateRanking(voterData, candidateNames);
-        majorityFound = majorityExists(ranking);
+    let k = 1;
+    let perVoterRanking = calculatePerVoterRanking(voterData);
+    let majorityFound = false;
+    let bucklinRanking = null;
+    for (k = 1; !majorityFound && k <= candidateNames.length; k++) {
+        [majorityFound, bucklinRanking] = majorityExists(perVoterRanking, k);
     }
-    console.log("k is: " + k + ", majorityFound is: " + majorityFound);
-    return ranking;
+    //console.log("k is: " + k + ", majorityFound is: " + majorityFound);
+    return [bucklinRanking, k];
+}
+
+function updateBucklinResults(bucklinRanking, k) {
+    for (let index = 0; index < bucklinRanking.length; index++) {
+        d3.select("#bucklin-" + (index + 1)).text(bucklinRanking[index][0]);
+    }
+    d3.select("#bucklin-header").html("Bucklin<br/>K = " + k);
 }
 
 // validate the voter choices input data and then
@@ -511,19 +535,23 @@ function submit() {
     if (valid) {
         // get the voterData
         let voterData = extractVoterData();
-        console.log("voterData is: ");
-        console.log(voterData);
+        //console.log("voterData is: ");
+        //console.log(voterData);
     	let ranking = calculateRanking(voterData, candidateNames);
         //console.log("ranking is:");
     	//console.log(ranking);
     	drawMajorityGraph(ranking);
+
         let svtResult = calculateSingleTransferrableVote(cloneObject(voterData));
         //console.log("SVT result is: ");
         //console.log(svtResult);
         updateSingleTransferrableVoteResults(svtResult);
-        let bucklinResult = calculateBucklin(cloneObject(voterData));
-        console.log("bucklinResult is:");
-        console.log(bucklinResult);
+
+        let [bucklinRanking, k] = calculateBucklin(cloneObject(voterData));
+        //console.log("bucklinRanking is:");
+        //console.log(bucklinRanking);
+        updateBucklinResults(bucklinRanking, k);
+
         showResults();
     }
 }
