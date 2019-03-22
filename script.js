@@ -402,6 +402,10 @@ function drawMajorityGraph(ranking) {
     d3.select("#majority-graph").attr("hidden", null);
 }
 
+function updateMajorityGraphResults(ranking) {
+
+}
+
 
 function calculateSingleTransferrableVote(voterData) {
     let svtResult = [];
@@ -448,7 +452,7 @@ function showResults() {
 // put Single Transferrable Vote results in output table
 function updateSingleTransferrableVoteResults(svtResult) {
     for (let entry of svtResult.entries()) {
-        d3.select("#single-transferrable-vote-" + (entry[0] + 1)).text(entry[1]);
+        d3.select("#single-transferrable-vote-" + (entry[0] + 1)).text(entry[1]).classed(entry[1], true);
     }
 }
 
@@ -517,9 +521,11 @@ function calculateBucklin(voterData) {
 
 function updateBucklinResults(bucklinRanking, k) {
     for (let index = 0; index < bucklinRanking.length; index++) {
-        d3.select("#bucklin-" + (index + 1)).text(bucklinRanking[index][0]);
+        d3.select("#bucklin-" + (index + 1)).text(bucklinRanking[index][0]).classed(bucklinRanking[index][0], true);
     }
-    d3.select("#bucklin-header").html("Bucklin<br/>K = " + k);
+    d3.select("#bucklin-header")
+        .html("Bucklin<br/>K = " + k)
+        .classed("results-header", true);
 }
 
 // validate the voter choices input data and then
@@ -541,6 +547,7 @@ function submit() {
         //console.log("ranking is:");
     	//console.log(ranking);
     	drawMajorityGraph(ranking);
+        updateMajorityGraphResults(ranking);
 
         let svtResult = calculateSingleTransferrableVote(cloneObject(voterData));
         //console.log("SVT result is: ");
