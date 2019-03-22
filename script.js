@@ -403,7 +403,11 @@ function drawMajorityGraph(ranking) {
 }
 
 function updateMajorityGraphResults(ranking) {
-
+    for (let entry of ranking.entries()) {
+        d3.select("#majority-graph-" + (entry[0] + 1))
+            .text(entry[1][0])
+            .attr("class", entry[1][0]);
+    }
 }
 
 
@@ -452,7 +456,9 @@ function showResults() {
 // put Single Transferrable Vote results in output table
 function updateSingleTransferrableVoteResults(svtResult) {
     for (let entry of svtResult.entries()) {
-        d3.select("#single-transferrable-vote-" + (entry[0] + 1)).text(entry[1]).classed(entry[1], true);
+        d3.select("#single-transferrable-vote-" + (entry[0] + 1))
+            .text(entry[1])
+            .attr("class", entry[1]);
     }
 }
 
@@ -521,7 +527,9 @@ function calculateBucklin(voterData) {
 
 function updateBucklinResults(bucklinRanking, k) {
     for (let index = 0; index < bucklinRanking.length; index++) {
-        d3.select("#bucklin-" + (index + 1)).text(bucklinRanking[index][0]).classed(bucklinRanking[index][0], true);
+        d3.select("#bucklin-" + (index + 1))
+            .text(bucklinRanking[index][0])
+            .attr("class", bucklinRanking[index][0]);
     }
     d3.select("#bucklin-header")
         .html("Bucklin<br/>K = " + k)
@@ -544,8 +552,8 @@ function submit() {
         //console.log("voterData is: ");
         //console.log(voterData);
     	let ranking = calculateRanking(voterData, candidateNames);
-        //console.log("ranking is:");
-    	//console.log(ranking);
+        console.log("ranking is:");
+    	console.log(ranking);
     	drawMajorityGraph(ranking);
         updateMajorityGraphResults(ranking);
 

@@ -76,36 +76,50 @@ td.alex {
     color: white;
     font-weight: bold;
     background-color: crimson;
+    text-align: center; 
+    text-transform:capitalize;
 }
 td.bart {
     color: white;
     font-weight: bold;
     background-color: darkorange;
+    text-align: center; 
+    text-transform:capitalize;
 }
 td.cindy {
     color: white;
     font-weight: bold;
     background-color: gold;
+    text-align: center; 
+    text-transform:capitalize;
 }
 td.david {
     color: white;
     font-weight: bold;
     background-color: green;
+    text-align: center; 
+    text-transform:capitalize;
 }
 td.erik {
     color: white;
     font-weight: bold;
     background-color: blue;
+    text-align: center; 
+    text-transform:capitalize;
 }
 td.frank {
     color: white;
     font-weight: bold;
     background-color: purple;
+    text-align: center; 
+    text-transform:capitalize;
 }
 td.greg {
     color: white;
     font-weight: bold;
     background-color: grey;
+    text-align: center; 
+    text-transform:capitalize;
 }
 
 thead,
