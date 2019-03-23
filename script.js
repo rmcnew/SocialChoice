@@ -286,6 +286,10 @@ function extractVoterData() {
     return voterData;
 }
 
+function objectify(arrayOfArrays) { 
+	return arrayOfArrays.reduce( (o,[k,v]) => (o[k]=v,o), {} );
+}
+
 // make a deep copy clone of a Javascript object
 function cloneObject(obj) {
     return JSON.parse(JSON.stringify(obj));
@@ -294,6 +298,20 @@ function cloneObject(obj) {
 // calculate rankings and show the results table
 function showResults() {
     d3.select("#results").attr("hidden", null);
+}
+
+// create a hash of per-voter rankings
+function calculatePerVoterRanking(voterData) {
+    let perVoterRanking = {};
+    voterNames.forEach( voterName => {
+        let voterRanking = Object.entries(voterData[voterName]).sort( (a, b) => {
+            return b[1] - a[1];	
+        });
+        perVoterRanking[voterName] = voterRanking;
+    });
+    //console.log("perVoterRanking is:");
+    //console.log(perVoterRanking);
+    return perVoterRanking;
 }
 
 /************* Majority Graph (Plurality) **************/
@@ -471,7 +489,61 @@ function updateSingleTransferrableVoteResults(svtResult) {
 /************* Second Order Copeland **************/
 // calculate the Second Order Copeland results
 function calculateSecondOrderCopeland(voterData) {
+	let candidateTotals = objectify(calculateRanking(voterData, candidateNames));
+    let winsLosses = {};
+    // initialize wins and losses
+    candidateNames.forEach( candidate => {
+        winsLosses[candidate] = {"wins": 0, "losses": 0, "net": 0, "prevailedAgainst":[], "competitorsNet": 0};
+    });
+     
+    // calculate pairwise wins and losses
+    candidateNames.forEach( candidateA => {
+        candidateNames.forEach( candidateB => {
+            if (candidateA !== candidateB) {
+              	let scoreA = candidateTotals[candidateA];
+				let scoreB = candidateTotals[candidateB]; 
+				if (scoreA > scoreB) {
+					winsLosses[candidateA]["wins"]++; 	
+					winsLosses[candidateB]["losses"]++;
+					winsLosses[candidateA]["prevailedAgainst"].push(candidateB);
+				} else {
+					winsLosses[candidateB]["wins"]++; 	
+					winsLosses[candidateA]["losses"]++;
+					winsLosses[candidateB]["prevailedAgainst"].push(candidateA);
+				}
+            }
+        });
+    });
+	// determine results
+	// calculate net wins
+	candidateNames.forEach( candidate => {
+		winsLosses[candidate]["net"] = winsLosses[candidate]["wins"] - winsLosses[candidate]["losses"];		 
+	});
+	// calculate sum of defeated competitors' nets (second order Copeland)
+	candidateNames.forEach( candidate => {
+		winsLosses[candidate]["prevailedAgainst"].forEach( losingCandidate => {
+			winsLosses[candidate]["competitorsNet"] += winsLosses[losingCandidate]["net"];
+		});
+	});	
+	// check for winner or ties
+	let ordered = Object.entries(winsLosses).sort( (a, b) => {
+		if (b[1]["net"] === a[1]["net"]) { 
+			return b[1]["competitorsNet"] - a[1]["competitorsNet"];
+		} else { 
+			return b[1]["net"] - a[1]["net"];
+		} 
+	});
+	//console.log(ordered);
+	return ordered;
+}
 
+// put Second Order Copeland results into results table
+function updateSecondOrderCopelandResults(results) {
+    for (let entry of results.entries()) {
+        d3.select("#copeland-" + (entry[0] + 1))
+            .text(entry[1][0])
+            .attr("class", entry[1][0]);
+    }
 }
 
 
@@ -512,19 +584,6 @@ function majorityExists(perVoterRanking, k) {
     }
 }
 
-// create a hash of per-voter rankings
-function calculatePerVoterRanking(voterData) {
-    let perVoterRanking = {};
-    voterNames.forEach( voterName => {
-        let voterRanking = Object.entries(voterData[voterName]).sort( (a, b) => {
-            return b[1] - a[1];	
-        });
-        perVoterRanking[voterName] = voterRanking;
-    });
-    //console.log("perVoterRanking is:");
-    //console.log(perVoterRanking);
-    return perVoterRanking;
-}
 
 // calculate the Bucklin ranking
 function calculateBucklin(voterData) {
@@ -582,6 +641,9 @@ function submit() {
 
         // calculate and update Second Order Copeland
         let copelandResult = calculateSecondOrderCopeland(cloneObject(voterData));
+		//console.log("copelandResult is: ");
+		//console.log(copelandResult);
+		updateSecondOrderCopelandResults(copelandResult);
 
         // calculate and update Bucklin
         let [bucklinRanking, k] = calculateBucklin(cloneObject(voterData));
