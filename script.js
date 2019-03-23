@@ -23,6 +23,7 @@ A02077329
 /* Turn-on strict mode for easier debugging */
 'use strict';
 
+/************* Data Field Lists **************/
 // names for the voter choices table fields
 let fieldNames = [
     "voter-a-alex-vote",
@@ -116,6 +117,7 @@ let defaultWeightValues = {
     "voter-c-weight": 3,
     "voter-d-weight": 6};
 
+/************* Shared Utility Functions for Data Extraction, Formatting, and Input Validation **************/
 // reset the voter choices table to default values
 function setVoterTableToDefault() {
     document.getElementById("voter-preference-selector").selectedIndex = 0;
@@ -284,6 +286,17 @@ function extractVoterData() {
     return voterData;
 }
 
+// make a deep copy clone of a Javascript object
+function cloneObject(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+// calculate rankings and show the results table
+function showResults() {
+    d3.select("#results").attr("hidden", null);
+}
+
+/************* Majority Graph (Plurality) **************/
 // calculate the plurality vote ranking 
 // needed to construct the majority graph
 function calculateRanking(voterData, candidates) {
@@ -411,6 +424,7 @@ function updateMajorityGraphResults(ranking) {
 }
 
 
+/************* Single Transferrable Vote **************/
 function calculateSingleTransferrableVote(voterData) {
     let svtResult = [];
     let candidates = candidateNames.slice();
@@ -444,14 +458,6 @@ function calculateSingleTransferrableVote(voterData) {
     return svtResult; 
 }
 
-function cloneObject(obj) {
-    return JSON.parse(JSON.stringify(obj));
-}
-
-// calculate rankings and show the results table
-function showResults() {
-    d3.select("#results").attr("hidden", null);
-}
 
 // put Single Transferrable Vote results in output table
 function updateSingleTransferrableVoteResults(svtResult) {
@@ -462,6 +468,14 @@ function updateSingleTransferrableVoteResults(svtResult) {
     }
 }
 
+/************* Second Order Copeland **************/
+// calculate the Second Order Copeland results
+function calculateSecondOrderCopeland(voterData) {
+
+}
+
+
+/************* Bucklin Ranking **************/
 // check a ranking to see if the ranking leader
 // has a majority of the votes (for Bucklin)
 function majorityExists(perVoterRanking, k) {
@@ -536,6 +550,7 @@ function updateBucklinResults(bucklinRanking, k) {
         .classed("results-header", true);
 }
 
+/************* Submit Button (Main) **************/
 // validate the voter choices input data and then
 // display the majority graph and results table
 function submit() {
@@ -547,21 +562,28 @@ function submit() {
         }
     });
     if (valid) {
-        // get the voterData
+        // get the voterData from the Voter Choices input table
         let voterData = extractVoterData();
         //console.log("voterData is: ");
         //console.log(voterData);
-    	let ranking = calculateRanking(voterData, candidateNames);
-        console.log("ranking is:");
-    	console.log(ranking);
-    	drawMajorityGraph(ranking);
-        updateMajorityGraphResults(ranking);
 
+        // calculate and update Majority Graph
+    	let majorityGraphRanking = calculateRanking(voterData, candidateNames);
+        //console.log("ranking is:");
+    	//console.log(majorityGraphRanking);
+    	drawMajorityGraph(majorityGraphRanking);
+        updateMajorityGraphResults(majorityGraphRanking);
+
+        // calculate and update Single Transferrable Vote
         let svtResult = calculateSingleTransferrableVote(cloneObject(voterData));
         //console.log("SVT result is: ");
         //console.log(svtResult);
         updateSingleTransferrableVoteResults(svtResult);
 
+        // calculate and update Second Order Copeland
+        let copelandResult = calculateSecondOrderCopeland(cloneObject(voterData));
+
+        // calculate and update Bucklin
         let [bucklinRanking, k] = calculateBucklin(cloneObject(voterData));
         //console.log("bucklinRanking is:");
         //console.log(bucklinRanking);
